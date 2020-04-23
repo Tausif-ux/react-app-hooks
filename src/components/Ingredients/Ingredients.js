@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import IngredientForm from './IngredientForm';
 import Search from './Search';
@@ -8,8 +8,12 @@ function Ingredients() {
 
   const [ingredientList, setIngredientList] = useState([]);
 
+  const ingredientsFetchHandler = useCallback( //react will cathces fn and will not make new fn while re-rendering
+    fetchedIngredients => {
+      setIngredientList(fetchedIngredients);
+    }, []);
+
   const addIngredientHandler = ingredient => {
-    
     fetch('https://react-hooks-84ada.firebaseio.com/ingredients.json', {
       method: 'POST',
       body: JSON.stringify(ingredient),
@@ -20,13 +24,14 @@ function Ingredients() {
     }).then(responseData => {
       setIngredientList(prevState =>{
         return [...prevState, { id: responseData.name, ...ingredient }]
-      });
-      console.log(responseData);   
+      }); 
     });
   };
 
   const removeItemHandler = ingId => {
-    setIngredientList(prevIngredients => prevIngredients.filter(ing => ing.id !== ingId));
+    setIngredientList(prevIngredients => { 
+      return prevIngredients.filter(ing => ing.id !== ingId);
+    });
   };
 
   // console.log(ingredientList);
@@ -34,11 +39,9 @@ function Ingredients() {
   return (
     <div className="App">
       <IngredientForm onAddIngredient = {addIngredientHandler} />
-
       <section>
-        <Search />
-        {/* Need to add list here! */}
-        <IngredientList ingredients={ingredientList} onRemoveItem={removeItemHandler} />
+        <Search onIngredientFetch = {ingredientsFetchHandler} />
+        <IngredientList ingredients = {ingredientList} onRemoveItem = {removeItemHandler} />
       </section>
     </div>
   );
