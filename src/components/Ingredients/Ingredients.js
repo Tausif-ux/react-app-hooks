@@ -8,10 +8,12 @@ function Ingredients() {
 
   const [ingredientList, setIngredientList] = useState([]);
 
+
   const ingredientsFetchHandler = useCallback( //react will cathces fn and will not make new fn while re-rendering
     fetchedIngredients => {
       setIngredientList(fetchedIngredients);
     }, []);
+
 
   const addIngredientHandler = ingredient => {
     fetch('https://react-hooks-84ada.firebaseio.com/ingredients.json', {
@@ -28,13 +30,19 @@ function Ingredients() {
     });
   };
 
+
   const removeItemHandler = ingId => {
-    setIngredientList(prevIngredients => { 
-      return prevIngredients.filter(ing => ing.id !== ingId);
+    fetch(`https://react-hooks-84ada.firebaseio.com/ingredients/${ingId}.json`, 
+    {
+      method: 'DELETE'
+    })
+    .then(response => {
+      setIngredientList(prevIngredients => { 
+        return prevIngredients.filter(ing => ing.id !== ingId);
+      });
     });
   };
 
-  // console.log(ingredientList);
 
   return (
     <div className="App">
