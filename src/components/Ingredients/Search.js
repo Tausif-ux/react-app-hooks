@@ -11,7 +11,7 @@ const Search = React.memo(({ onIngredientFetch }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if(searchString === inputRef.current.value) {
+      if (searchString === inputRef.current.value) {
         const query = searchString.length === 0 ? '' : `?orderBy="title"&equalTo="${searchString}"`;
         fetch('https://react-hooks-84ada.firebaseio.com/ingredients.json' + query)
           .then(response => {
@@ -21,14 +21,14 @@ const Search = React.memo(({ onIngredientFetch }) => {
             const fetchedIngList = [];
             for (let key in responseData) {
               let ingredientElement = responseData[key];
-              fetchedIngList.push({ id: key, title: ingredientElement.title, amount: ingredientElement.amount });       
+              fetchedIngList.push({ id: key, title: ingredientElement.title, amount: ingredientElement.amount });
             }
             onIngredientFetch(fetchedIngList);
           });
       }
-      
+
     }, 500);
-    
+
     return () => {
       clearTimeout(timer);
     };
@@ -41,7 +41,7 @@ const Search = React.memo(({ onIngredientFetch }) => {
       <Card>
         <div className="search-input">
           <label>Filter by Title</label>
-          <input ref = {inputRef} type = "text" value = {searchString} onChange = {event => {
+          <input ref={inputRef} type="text" value={searchString} onChange={event => {
             setSearchString(event.target.value);
           }} />
         </div>
